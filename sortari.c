@@ -649,21 +649,21 @@ int main()
     //scanf("%d", &n);
     srand(time(NULL));
 
-    //creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
-    genereazaAproapeSortat("D:\\Anton\\uni\\sort\\lista.txt", n, 0.1); //lista aproape sorata
+    creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
+    //genereazaAproapeSortat("D:\\Anton\\uni\\sort\\lista.txt", n, 0.1); //lista aproape sorata
 
     //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\lista.txt", n); //lista sortata
     //inverseazaListaDinFisier("D:\\Anton\\uni\\sort\\lista.txt", n); //lista inversata
 
-    //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\insertion_sortat.txt", n);
-    //selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\selection_sortat.txt", n);
-    //double_selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\double_selection_sortat.txt", n);
-    //quickSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\quick_sortat.txt", n);
-    //bucketSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bucket_sortat.txt", n);
-    //radixSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\radix_sortat.txt", n);
-    //heapSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\heap_sortat.txt", n);
-    //timSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\tim_sortat.txt", n);
+    insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\insertion_sortat.txt", n);
+    selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\selection_sortat.txt", n);
+    double_selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\double_selection_sortat.txt", n);
+    quickSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\quick_sortat.txt", n);
+    bucketSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bucket_sortat.txt", n);
+    radixSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\radix_sortat.txt", n);
+    heapSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\heap_sortat.txt", n);
+    timSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\tim_sortat.txt", n);
     
-    bubble_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bubble_sortat.txt", n);
+    //bubble_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bubble_sortat.txt", n);
     return 0;
 }
