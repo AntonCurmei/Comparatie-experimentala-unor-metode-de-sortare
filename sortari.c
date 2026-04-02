@@ -13,6 +13,12 @@ int random_positive_int()
     return (int)x;
 }
 
+int random_positive_double()
+{
+    double x = (double)rand() / RAND_MAX;
+    return x;
+}
+
 void creareArray(const char* numeFisier, int n)
 {
     FILE* f = fopen(numeFisier, "w");
@@ -23,8 +29,9 @@ void creareArray(const char* numeFisier, int n)
     }
     for (int i = 0; i < n; i++)
     {
-        int x = random_positive_int(); //numere mai maru
+        int x = random_positive_int(); //numere mai mari
         //int x = rand(); //numere mai mici
+        //int x = random_positive_double(); //numere reale
         fprintf(f, "%d ", x);
     }
     fclose(f);
@@ -58,6 +65,51 @@ void scriereArray(const char* numeFisier, int v[], int n)
         fprintf(f, "%d ", v[i]);
     }
     fclose(f);
+}
+
+void genereazaAproapeSortat(const char* numeFisier, int n, double procent)
+{
+    int* v = (int*)malloc(n * sizeof(int));
+    if (v == NULL)
+    {
+        printf("Eroare la alocarea memoriei.\n");
+        return;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        v[i] = i + 1;
+    }
+    int nrSchimbari = (int)(n * procent / 100.0);
+    for (int i = 0; i < nrSchimbari; i++)
+    {
+        int poz1 = rand() % n;
+        int poz2 = rand() % n;
+        int aux = v[poz1];
+        v[poz1] = v[poz2];
+        v[poz2] = aux;
+    }
+    scriereArray(numeFisier, v, n);
+    free(v);
+}
+
+void inverseazaVector(int v[], int n)
+{
+    int i, temp;
+    for (i = 0; i < n / 2; i++)
+    {
+        temp = v[i];
+        v[i] = v[n - 1 - i];
+        v[n - 1 - i] = temp;
+    }
+}
+
+void inverseazaListaDinFisier(const char* numeFisier, int n)
+{
+    int* v = (int*)malloc(n * sizeof(int));
+    citireArray(numeFisier, v, n);
+    inverseazaVector(v, n);
+    scriereArray(numeFisier, v, n);
+    free(v);
 }
 
 void selection_sort(const char* fisierIntrare, const char* fisierIesire, int n)
@@ -553,19 +605,60 @@ void timSort(const char* fisierIntrare, const char* fisierIesire, int n)
     free(v);
 }
 
+void bubble_sort(const char* fisierIntrare, const char* fisierIesire, int n)
+{
+    int* v = (int*)malloc(n * sizeof(int));
+    if (v == NULL)
+    {
+        printf("Eroare la alocarea memoriei\n");
+        return;
+    }
+    citireArray(fisierIntrare, v, n);
+    clock_t start, finish;
+    double durata;
+    start = clock();
+    for (int i = 0; i < n - 1; i++)
+    {
+        
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (v[j] > v[j + 1])
+            {
+                int temp = v[j];
+                v[j] = v[j+1];
+                v[j+1] = temp;
+            }
+        }
+    }
+    finish = clock();
+    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    scriereArray(fisierIesire, v, n);
+    printf("Sortarea BubbleSort a durat %.6f secunde\n", durata);
+    free(v);
+}
+
+
 int main()
 {
+
     int n = 1000000;
     //scanf("%d", &n);
     srand(time(NULL));
-    creareArray("lista.txt", n);
-    insertionSortFisier("lista.txt", "lista_sortata.txt", n);
-    selection_sort("lista.txt", "lista_sortata.txt", n);
-    double_selection_sort("lista.txt", "lista_sortata.txt", n);
-    quickSortFisier("lista.txt", "lista_sortata.txt", n);
-    bucketSort("lista.txt", "lista_sortata.txt", n);
-    radixSort("lista.txt", "lista_sortata.txt", n);
-    heapSort("lista.txt", "lista_sortata.txt", n);
-    timSort("lista.txt", "lista_sortata.txt", n);
+
+    creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
+    genereazaAproapeSortat("D:\\Anton\\uni\\sort\\lista.txt", n, 0.1); //lista aproape sorata
+
+    insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\lista.txt", n); //lista sortata
+    //inverseazaListaDinFisier("D:\\Anton\\uni\\sort\\lista.txt", n); //lista inversata
+
+    //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\insertion_sortat.txt", n);
+    //selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\selection_sortat.txt", n);
+    //double_selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\double_selection_sortat.txt", n);
+    //quickSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\quick_sortat.txt", n);
+    //bucketSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bucket_sortat.txt", n);
+    //radixSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\radix_sortat.txt", n);
+    //heapSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\heap_sortat.txt", n);
+    //timSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\tim_sortat.txt", n);
+    bubble_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bubble_sortat.txt", n);
     return 0;
 }
