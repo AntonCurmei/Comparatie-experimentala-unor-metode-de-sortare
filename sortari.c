@@ -13,10 +13,14 @@ int random_positive_int()
     return (int)x;
 }
 
-int random_positive_double()
+int random_signed_int_interval(int a, int b)
 {
-    double x = (double)rand() / RAND_MAX;
-    return x;
+    return a + rand() % (b - a + 1);
+}
+
+double random_double_interval(double a, double b)
+{
+    return a + (double)rand() / RAND_MAX * (b - a);
 }
 
 void creareArray(const char* numeFisier, int n)
@@ -31,7 +35,7 @@ void creareArray(const char* numeFisier, int n)
     {
         int x = random_positive_int(); //numere mai mari
         //int x = rand(); //numere mai mici
-        //int x = random_positive_double(); //numere reale
+        //double x = random_double_interval(-100000, 100000); //numere reale
         fprintf(f, "%d ", x);
     }
     fclose(f);
@@ -645,10 +649,10 @@ int main()
     //scanf("%d", &n);
     srand(time(NULL));
 
-    creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
+    //creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
     genereazaAproapeSortat("D:\\Anton\\uni\\sort\\lista.txt", n, 0.1); //lista aproape sorata
 
-    insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\lista.txt", n); //lista sortata
+    //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\lista.txt", n); //lista sortata
     //inverseazaListaDinFisier("D:\\Anton\\uni\\sort\\lista.txt", n); //lista inversata
 
     //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\insertion_sortat.txt", n);
@@ -659,6 +663,7 @@ int main()
     //radixSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\radix_sortat.txt", n);
     //heapSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\heap_sortat.txt", n);
     //timSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\tim_sortat.txt", n);
+    
     bubble_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bubble_sortat.txt", n);
     return 0;
 }
