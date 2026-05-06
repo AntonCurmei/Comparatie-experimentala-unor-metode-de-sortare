@@ -1,7 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 #include <time.h>
+#include <limits.h>
+#define LISTA "D:\\sort\\lista.txt"
+#define REZ "D:\\sort\\rezultate.txt"
+
+double timpCurent()
+{
+    LARGE_INTEGER frecventa, contor;
+    QueryPerformanceFrequency(&frecventa);
+    QueryPerformanceCounter(&contor);
+
+    return (double)contor.QuadPart / frecventa.QuadPart;
+}
 
 int random_positive_int()
 {
@@ -125,9 +138,7 @@ void selection_sort(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     for (int i = 0; i < n - 1; i++)
     {
         int min = i;
@@ -145,10 +156,13 @@ void selection_sort(const char* fisierIntrare, const char* fisierIesire, int n)
             v[min] = aux;
         }
     }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea SelectionSort a durat %.6f secunde\n", durata);
+    printf("Sortarea SelectionSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea SelectionSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
 }
 
@@ -161,9 +175,7 @@ void double_selection_sort(const char* fisierIntrare, const char* fisierIesire, 
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     for (int st=0, dr=n-1; st<dr; st++, dr--)
     {
         int min = st;
@@ -196,15 +208,50 @@ void double_selection_sort(const char* fisierIntrare, const char* fisierIesire, 
             v[max] = aux;
         }
     }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea DoubleSelectionSort a durat %.6f secunde\n", durata);
+    printf("Sortarea DoubleSelectionSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea DoubleSelectionSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
+}
+
+int mediana(int v[], int st, int dr)
+{
+    int mij = (st + dr) / 2;
+    if (v[st] > v[mij])
+    {
+        int aux = v[st];
+        v[st] = v[mij];
+        v[mij] = aux;
+    }
+
+    if (v[st] > v[dr])
+    {
+        int aux = v[st];
+        v[st] = v[dr];
+        v[dr] = aux;
+    }
+
+    if (v[mij] > v[dr])
+    {
+        int aux = v[mij];
+        v[mij] = v[dr];
+        v[dr] = aux;
+    }
+
+    return mij;
+
 }
 
 int partition(int v[], int st, int dr)
 {
+    int pivotidx = mediana(v, st, dr);
+    int aux = v[pivotidx];
+    v[pivotidx] = v[dr];
+    v[dr] = aux;
     int pivot = v[dr];
     int i = st - 1;
     for (int j = st; j < dr; j++)
@@ -217,7 +264,7 @@ int partition(int v[], int st, int dr)
             v[j] = aux;
         }
     }
-    int aux = v[i + 1];
+    aux = v[i + 1];
     v[i + 1] = v[dr];
     v[dr] = aux;
     return i + 1;
@@ -242,14 +289,15 @@ void quickSortFisier(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     quickSort(v, 0, n - 1);
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea QuickSort a durat %.6f secunde\n", durata);
+    printf("Sortarea QuickSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea QuickSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
 }
 
@@ -307,19 +355,107 @@ void radixSort(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     int max = maxim(v, n);
     for (int exp = 1; max / exp > 0; exp *= 10)
     {
         countingSortCifra(v, n, exp);
     }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea RadixSort a durat %.6f secunde\n", durata);
+    printf("Sortarea RadixSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea RadixSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
+}
+
+void radixSortPozitiv(int v[], int n)
+{
+    if (n <= 0)
+        return;
+
+    int max = maxim(v, n);
+
+    for (int exp = 1; max / exp > 0; exp *= 10)
+    {
+        countingSortCifra(v, n, exp);
+    }
+}
+
+void radixSortNegativ(const char* fisierIntrare, const char* fisierIesire, int n)
+{
+    int* v = (int*)malloc(n * sizeof(int));
+    if (v == NULL)
+    {
+        printf("Eroare la alocarea memoriei\n");
+        return;
+    }
+    citireArray(fisierIntrare, v, n);
+    double start = timpCurent();
+    int nrNegative = 0;
+    int nrPozitive = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (v[i] < 0)
+            nrNegative++;
+        else
+            nrPozitive++;
+    }
+    int* negative = (int*)malloc(nrNegative * sizeof(int));
+    int* pozitive = (int*)malloc(nrPozitive * sizeof(int));
+    if ((nrNegative > 0 && negative == NULL) || (nrPozitive > 0 && pozitive == NULL))
+    {
+        printf("Eroare la alocarea memoriei\n");
+        free(v);
+        free(negative);
+        free(pozitive);
+        return;
+    }
+    int indexNeg = 0;
+    int indexPoz = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (v[i] < 0)
+            negative[indexNeg++] = -v[i];
+        else
+            pozitive[indexPoz++] = v[i];
+    }
+    radixSortPozitiv(negative, nrNegative);
+    radixSortPozitiv(pozitive, nrPozitive);
+    int k = 0;
+    for (int i = nrNegative - 1; i >= 0; i--)
+    {
+        v[k++] = -negative[i];
+    }
+    for (int i = 0; i < nrPozitive; i++)
+    {
+        v[k++] = pozitive[i];
+    }
+    double finish = timpCurent();
+    double durata = finish - start;
+    scriereArray(fisierIesire, v, n);
+    printf("Sortarea RadixSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea RadixSort a durat %.9f secunde\n", durata);
+    fclose(f);
+    free(v);
+    free(negative);
+    free(pozitive);
+}
+
+int minim(int v[], int n)
+{
+    int min = v[0];
+    for (int i = 1; i < n; i++)
+    {
+        if (v[i] < min)
+        {
+            min = v[i];
+        }
+    }
+    return min;
 }
 
 void insertionSort(int v[], int n)
@@ -337,19 +473,6 @@ void insertionSort(int v[], int n)
     }
 }
 
-int minim(int v[], int n)
-{
-    int min = v[0];
-    for (int i=1; i<n; i++)
-    {
-        if (v[i] < min)
-        {
-            min = v[i];
-        }
-    }
-    return min;
-}
-
 void bucketSort(const char* fisierIntrare, const char* fisierIesire, int n)
 {
     int* v = (int*)malloc(n * sizeof(int));
@@ -359,9 +482,7 @@ void bucketSort(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     if (n <= 1)
     {
         return;
@@ -417,10 +538,116 @@ void bucketSort(const char* fisierIntrare, const char* fisierIesire, int n)
     free(bucketuri);
     free(dim);
     free(poz);
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea BucketSort a durat %.6f secunde\n", durata);
+    printf("Sortarea BucketSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea BucketSort a durat %.9f secunde\n", durata);
+    fclose(f);
+    free(v);
+}
+
+void bucketSortNegativ(const char* fisierIntrare, const char* fisierIesire, int n)
+{
+    int* v = (int*)malloc(n * sizeof(int));
+    if (v == NULL)
+    {
+        printf("Eroare la alocarea memoriei\n");
+        return;
+    }
+    citireArray(fisierIntrare, v, n);
+    double start = timpCurent();
+    if (n <= 1)
+    {
+        double finish = timpCurent();
+        double durata = finish - start;
+        scriereArray(fisierIesire, v, n);
+        printf("Sortarea BucketSort a durat %.9f secunde\n", durata);
+        free(v);
+        return;
+    }
+    int min = minim(v, n);
+    int max = maxim(v, n);
+    int nrBucketuri = n;
+    long long diferenta = (long long)max - min;
+    long long interval = diferenta / nrBucketuri + 1;
+    int* dim = (int*)calloc(nrBucketuri, sizeof(int));
+    int* poz = (int*)calloc(nrBucketuri, sizeof(int));
+    int** bucketuri = (int**)malloc(nrBucketuri * sizeof(int*));
+    if (dim == NULL || poz == NULL || bucketuri == NULL)
+    {
+        printf("Eroare la alocarea memoriei\n");
+        free(v);
+        free(dim);
+        free(poz);
+        free(bucketuri);
+        return;
+    }
+    for (int i = 0; i < nrBucketuri; i++)
+    {
+        bucketuri[i] = NULL;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        int index = (int)(((long long)v[i] - min) / interval);
+        dim[index]++;
+    }
+    for (int i = 0; i < nrBucketuri; i++)
+    {
+        if (dim[i] > 0)
+        {
+            bucketuri[i] = (int*)malloc(dim[i] * sizeof(int));
+            if (bucketuri[i] == NULL)
+            {
+                printf("Eroare la alocarea memoriei\n");
+                for (int j = 0; j < i; j++)
+                {
+                    free(bucketuri[j]);
+                }
+                free(bucketuri);
+                free(dim);
+                free(poz);
+                free(v);
+                return;
+            }
+        }
+    }
+    for (int i = 0; i < n; i++)
+    {
+        int index = (int)(((long long)v[i] - min) / interval);
+        bucketuri[index][poz[index]] = v[i];
+        poz[index]++;
+    }
+    for (int i = 0; i < nrBucketuri; i++)
+    {
+        if (dim[i] > 1)
+        {
+            insertionSort(bucketuri[i], dim[i]);
+        }
+    }
+    int k = 0;
+    for (int i = 0; i < nrBucketuri; i++)
+    {
+        for (int j = 0; j < dim[i]; j++)
+        {
+            v[k++] = bucketuri[i][j];
+        }
+    }
+    double finish = timpCurent();
+    double durata = finish - start;
+    scriereArray(fisierIesire, v, n);
+    printf("Sortarea BucketSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea BucketSort a durat %.9f secunde\n", durata);
+    fclose(f);
+    for (int i = 0; i < nrBucketuri; i++)
+    {
+        free(bucketuri[i]);
+    }
+    free(bucketuri);
+    free(dim);
+    free(poz);
     free(v);
 }
 
@@ -455,9 +682,7 @@ void heapSort(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     for (int i=n/2-1; i>=0; i--)
     {
         heapify(v, n, i);
@@ -469,10 +694,13 @@ void heapSort(const char* fisierIntrare, const char* fisierIesire, int n)
         v[i] = aux;
         heapify(v, i, 0);
     }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea HeapSort a durat %.6f secunde\n", durata);
+    printf("Sortarea HeapSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea HeapSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
 }
 
@@ -485,14 +713,15 @@ void insertionSortFisier(const char* fisierIntrare, const char* fisierIesire, in
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     insertionSort(v, n);
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea InsertionSort a durat %.6f secunde\n", durata);
+    printf("Sortarea InsertionSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea InsertionSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
 }
 
@@ -573,9 +802,7 @@ void timSort(const char* fisierIntrare, const char* fisierIesire, int n)
         return;
     }
     citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
+    double start = timpCurent();
     for (int i=0; i<n; i+=32)
     {
         int dr = i + 32 - 1;
@@ -602,68 +829,39 @@ void timSort(const char* fisierIntrare, const char* fisierIesire, int n)
             interclasare(v, st, mj, dr);
         }
     }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
+    double finish = timpCurent();
+    double durata = finish - start;
     scriereArray(fisierIesire, v, n);
-    printf("Sortarea TimSort a durat %.6f secunde\n", durata);
+    printf("Sortarea TimSort a durat %.9f secunde\n", durata);
+    FILE* f = fopen(REZ, "a");
+    fprintf(f, "Sortarea TimSort a durat %.9f secunde\n", durata);
+    fclose(f);
     free(v);
 }
-
-void bubble_sort(const char* fisierIntrare, const char* fisierIesire, int n)
-{
-    int* v = (int*)malloc(n * sizeof(int));
-    if (v == NULL)
-    {
-        printf("Eroare la alocarea memoriei\n");
-        return;
-    }
-    citireArray(fisierIntrare, v, n);
-    clock_t start, finish;
-    double durata;
-    start = clock();
-    for (int i = 0; i < n - 1; i++)
-    {
-        
-        for (int j = 0; j < n - i - 1; j++)
-        {
-            if (v[j] > v[j + 1])
-            {
-                int temp = v[j];
-                v[j] = v[j+1];
-                v[j+1] = temp;
-            }
-        }
-    }
-    finish = clock();
-    durata = (double)(finish - start) / CLOCKS_PER_SEC;
-    scriereArray(fisierIesire, v, n);
-    printf("Sortarea BubbleSort a durat %.6f secunde\n", durata);
-    free(v);
-}
-
 
 int main()
 {
-
     int n = 1000000;
-    //scanf("%d", &n);
+    //int n; scanf("%d", &n);
     srand(time(NULL));
 
-    creareArray("D:\\Anton\\uni\\sort\\lista.txt", n); //lista random
-    //genereazaAproapeSortat("D:\\Anton\\uni\\sort\\lista.txt", n, 0.1); //lista aproape sorata
+    creareArray(LISTA, n); //lista random
+    //genereazaAproapeSortat(LISTA, n, 0.1); //lista aproape sorata
 
-    //insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\lista.txt", n); //lista sortata
-    //inverseazaListaDinFisier("D:\\Anton\\uni\\sort\\lista.txt", n); //lista inversata
+    //timSort(LISTA, LISTA, n); //lista sortata
+    //inverseazaListaDinFisier(LISTA, n); //lista inversata
 
-    insertionSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\insertion_sortat.txt", n);
-    selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\selection_sortat.txt", n);
-    double_selection_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\double_selection_sortat.txt", n);
-    quickSortFisier("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\quick_sortat.txt", n);
-    bucketSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bucket_sortat.txt", n);
-    radixSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\radix_sortat.txt", n);
-    heapSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\heap_sortat.txt", n);
-    timSort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\tim_sortat.txt", n);
+    FILE* f = fopen(REZ, "w");
+    fprintf(f, "Rezultate cu %d elemente:\n", n);
+    fclose(f);
+    insertionSortFisier(LISTA, "D:\\sort\\insertion_sortat.txt", n);
+    selection_sort(LISTA, "D:\\sort\\selection_sortat.txt", n);
+    double_selection_sort(LISTA, "D:\\sort\\double_selection_sortat.txt", n);
+    quickSortFisier(LISTA, "D:\\sort\\quick_sortat.txt", n);
+    bucketSort(LISTA, "D:\\sort\\bucket_sortat.txt", n);
+    radixSort(LISTA, "D:\\sort\\radix_sortat.txt", n);
+    heapSort(LISTA, "D:\\sort\\heap_sortat.txt", n);
+    timSort(LISTA, "D:\\sort\\tim_sortat.txt", n);
     
-    //bubble_sort("D:\\Anton\\uni\\sort\\lista.txt", "D:\\Anton\\uni\\sort\\bubble_sortat.txt", n);
     return 0;
 }
