@@ -21,3 +21,6 @@ Acest proiect prezintă o comparație experimentală între mai mulți algoritmi
 În experimentele pe liste aleatoare au fost folosite:
 - numere mici: intervalul [0, 32767]
 - numere mari: intervalul [0, 2147483647]
+
+## Tabelele cu datele experimentului
+https://docs.google.com/spreadsheets/d/1vLh7cH3-zMZM2z13TrpL8UL9WXxjZAFkBV2MDQqNb1Q/edit?usp=sharing
